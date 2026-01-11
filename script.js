@@ -3,7 +3,7 @@
 // ======================
 const EMAILJS_PUBLIC_KEY = "MrXLGgk4CNPp4h0oC";
 const EMAILJS_SERVICE_ID = "service_vqe1ue7";
-const EMAILJS_TEMPLATE_ID = "template_pb71hwa";
+const EMAILJS_TEMPLATE_ID = "template_he9cpou";
 
 // Initialize EmailJS
 (function() {
