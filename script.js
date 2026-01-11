@@ -1,4 +1,14 @@
-// script.js
+// ======================
+// EMAILJS CONFIGURATION (REAL CONTACT FORM)
+// ======================
+const EMAILJS_PUBLIC_KEY = "MrXLGgk4CNPp4h0oC";
+const EMAILJS_SERVICE_ID = "service_vqe1ue7";
+const EMAILJS_TEMPLATE_ID = "template_pb71hwa";
+
+// Initialize EmailJS
+(function() {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+})();
 
 // DOM Elements
 const loadingScreen = document.querySelector('.loading-screen');
@@ -25,16 +35,75 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set up event listeners
     setupEventListeners();
+    
+    // Handle real form submission
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleFormSubmit);
+    }
 });
+
+// Handle real email sending
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const name = e.target.querySelector('input[type="text"]').value;
+    const email = e.target.querySelector('input[type="email"]').value;
+    const message = e.target.querySelector('textarea').value;
+    
+    // Basic validation
+    if (!name.trim() || !email.trim() || !message.trim()) {
+        alert("Please fill in all fields.");
+        return;
+    }
+    
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+    
+    // Update button state
+    const submitBtn = e.target.querySelector('.btn.primary');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Sending...";
+    submitBtn.disabled = true;
+    
+    // Send email via EmailJS
+    emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+            from_name: name,
+            from_email: email,
+            message: message
+        }
+    )
+    .then(function(response) {
+        console.log("SUCCESS!", response.status, response.text);
+        alert("✅ Your message has been sent successfully! I'll get back to you soon.");
+        e.target.reset();
+    })
+    .catch(function(error) {
+        console.error("FAILED...", error);
+        alert("❌ Failed to send your message. Please try again or contact me directly at alex.morgan@cybersec.expert");
+    })
+    .finally(() => {
+        // Restore button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+// ======================
+// EXISTING ANIMATION FUNCTIONS (UNCHANGED)
+// ======================
 
 // Initialize animations
 function initAnimations() {
-    // Animate skill bars when in view
     animateOnScroll();
-    
-    // Initialize AOS-like functionality
     window.addEventListener('scroll', animateOnScroll);
-    animateOnScroll(); // Initial check
 }
 
 // Create background particles
@@ -45,13 +114,12 @@ function createParticles() {
         const particle = document.createElement('div');
         particle.classList.add('particle');
         
-        // Random properties
         const size = Math.random() * 10 + 2;
         const posX = Math.random() * 100;
         const posY = Math.random() * 100;
         const animationDuration = Math.random() * 20 + 10;
         const animationDelay = Math.random() * 5;
-        const hue = Math.random() * 60; // Blue to cyan range
+        const hue = Math.random() * 60;
         
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
@@ -67,13 +135,11 @@ function createParticles() {
 
 // Set up event listeners
 function setupEventListeners() {
-    // Custom cursor
     document.addEventListener('mousemove', (e) => {
         cursorFollower.style.left = `${e.clientX}px`;
         cursorFollower.style.top = `${e.clientY}px`;
     });
     
-    // Button hover effects
     const buttons = document.querySelectorAll('.btn');
     buttons.forEach(button => {
         button.addEventListener('mouseenter', () => {
@@ -87,7 +153,6 @@ function setupEventListeners() {
         });
     });
     
-    // Project card hover effects
     projectCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             cursorFollower.style.transform = 'translate(-50%, -50%) scale(0)';
@@ -97,22 +162,10 @@ function setupEventListeners() {
             cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
         });
     });
-    
-    // Form submission
-    const contactForm = document.querySelector('.contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // In a real implementation, you would send the form data here
-            alert('Thank you for your message! This is a demo form.');
-            contactForm.reset();
-        });
-    }
 }
 
 // Animation on scroll functionality
 function animateOnScroll() {
-    // Skill bars animation
     skillProgressBars.forEach(bar => {
         const value = bar.getAttribute('data-value');
         const position = bar.getBoundingClientRect().top;
@@ -123,7 +176,6 @@ function animateOnScroll() {
         }
     });
     
-    // Fade-in elements
     fadeElements.forEach(element => {
         const elementPosition = element.getBoundingClientRect().top;
         const screenPosition = window.innerHeight / 1.3;
@@ -133,7 +185,6 @@ function animateOnScroll() {
         }
     });
     
-    // Timeline items animation
     timelineItems.forEach((item, index) => {
         const itemPosition = item.getBoundingClientRect().top;
         const screenPosition = window.innerHeight / 1.3;
